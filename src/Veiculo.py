@@ -1,7 +1,7 @@
+
+class Veiculo:
  
-def Veiculo(java):
- 
- def __init_(local,tipo,carga_maxima,carga_transportada,tempo_viagem_atual,tempo_viagem_maximo,nr_meds,nr_meds_maximo,nr_comida,nr_comida_max,nr_agua,nr_agua_maximo):
+ def __init__(self, local,tipo,carga_maxima,carga_transportada,tempo_viagem_atual,tempo_viagem_maximo,nr_meds,nr_meds_maximo,nr_comida,nr_comida_max,nr_agua,nr_agua_maximo):
     self.local=local
     self.tipo=tipo
     self.carga_maxima=carga_maxima

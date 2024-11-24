@@ -1,0 +1,32 @@
+
+class Cidade:
+
+    def __init__(self, nome, nivel_risco,  populacao_necessitada, populacao_total, necessidades, tempo_critico):
+        self.nome = nome
+        self.nivel_risco = nivel_risco
+        self.populacao_necessitada = populacao_necessitada
+        self.necessidades = necessidades
+        self.populacao_total = populacao_total
+        self.tempo_critico = tempo_critico
+
+    def verifica_necessidades(self, agua, comida, medicamentos):
+         self.necessidades += agua + comida + medicamentos
+    
+    def verifica_populacao(self, populacao_ajudada, populacao_necessitada):
+        return self.populacao_total >= 0 and self.populacao_total >= populacao_ajudada and self.populacao_total >= populacao_necessitada
+    
+    def incrementa_tempo_critico(self):
+        self.tempo_critico += 1
+
+    def incrementa_necessitados(self, populacao_total):
+        self.populacao_necessitada += 1 and self.populacao_necessitada <= populacao_total
+
+    def decrementa_necessitados(self,populacao_ajudada):
+        self.populacao_necessitada -= populacao_ajudada and self.populacao_necessitada >= 0
+    
+    def nivel_risco(self, populacao_necessitada, populacao_total, tempo_critico):
+        self.nivel_risco = populacao_necessitada/populacao_total * tempo_critico
+    
+    def incrementa_tempo_decorrido(self):
+        self.tempo_decorrido += 1
+    
