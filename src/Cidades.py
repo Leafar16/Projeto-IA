@@ -1,7 +1,7 @@
 
 class Cidade:
 
-    def __init__(self, nome, nivel_risco,  populacao_necessitada, populacao_total, necessidades, tempo_critico):
+    def __init__(self, nome, nivel_risco, populacao_necessitada, populacao_total, necessidades, tempo_critico):
         self.nome = nome
         self.nivel_risco = nivel_risco
         self.populacao_necessitada = populacao_necessitada
@@ -9,8 +9,8 @@ class Cidade:
         self.populacao_total = populacao_total
         self.tempo_critico = tempo_critico
 
-    def verifica_necessidades(self, agua, comida, medicamentos):
-         self.necessidades += agua + comida + medicamentos
+    def verifica_necessidades(self, necessidades):
+         self.necessidades = necessidades
     
     def verifica_populacao(self, populacao_ajudada, populacao_necessitada):
         return self.populacao_total >= 0 and self.populacao_total >= populacao_ajudada and self.populacao_total >= populacao_necessitada
