@@ -1,15 +1,16 @@
 from Graph import Graph
 from Node import Node
-from Cidades import Cidade
+from Cidades import *
+from Veiculo import *
 
 def main():
     #g = Graph()
 
-    # Ficha2
+    # Definir as cidades
     Ancora = Cidade("Ancora", 2, 400, 1000, 200, 0)
-    Pte_Lima = Cidade("Pte_Lima", 1, 100, 2000, 10, 0)
+    Pte_Lima = Cidade("Pte Lima", 1, 100, 2000, 10, 0)
     Braga = Cidade("Braga", 0, 0, 3000, 0, 0)
-    P_Lanhoso = Cidade("P_Lanhoso", 3, 1000, 1500, 500, 0)
+    P_Lanhoso = Cidade("P Lanhoso", 3, 1000, 1500, 500, 0)
     Barcelos = Cidade("Barcelos", 0, 0, 2500, 0, 0)
     Esposende = Cidade("Esposende", 2, 300, 1200, 150, 0)
     Famalicao = Cidade("Famalicao", 0, 0, 2200, 0, 0)
@@ -25,68 +26,48 @@ def main():
     Santa_Maria_da_Feira = Cidade("Santa Maria da Feira", 0, 0, 2200, 0, 0)
     Ovar = Cidade("Ovar", 1, 270, 2700, 135, 0)
 
-    AncoraN = Node("Ancora")
-    Pte_LimaN = Node("Pte_Lima")
-    BragaN = Node("Braga")
-    P_LanhosoN = Node("P_Lanhoso")
-    BarcelosN = Node("Barcelos")
-    EsposendeN = Node("Esposende")
-    FamalicaoN = Node("Famalicao")
-    GuimaraesN = Node("Guimaraes")
-    Viana_do_CasteloN = Node("Viana do Castelo")
-    Povoa_de_VarzimN = Node("Povoa de Varzim")
-    Santo_TirsoN = Node("Santo Tirso")
-    AmaranteN = Node("Amarante")
-    MaiaN = Node("Maia")
-    LousadaN = Node("Lousada")
-    Marco_de_CanavesesN = Node("Marco de Canaveses")
-    PortoN = Node("Porto")
-    Santa_Maria_da_FeiraN = Node("Santa Maria da Feira")
-    OvarN = Node("Ovar")
+    cidades=[Ancora, Pte_Lima, Braga, P_Lanhoso, Barcelos, 
+    Esposende, Famalicao, Guimaraes, Viana_do_Castelo, 
+    Povoa_de_Varzim, Santo_Tirso, Amarante, Maia, Lousada, 
+    Marco_de_Canaveses, Porto, Santa_Maria_da_Feira, Ovar]
 
-    nodes = [
-        AncoraN,
-        Pte_LimaN,
-        BragaN,
-        P_LanhosoN,
-        BarcelosN,
-        EsposendeN,
-        FamalicaoN,
-        GuimaraesN,
-        Viana_do_CasteloN,
-        Povoa_de_VarzimN,
-        Santo_TirsoN,
-        AmaranteN,
-        MaiaN,
-        LousadaN,
-        Marco_de_CanavesesN,
-        PortoN,
-        Santa_Maria_da_FeiraN,
-        OvarN
-    ]
+    cidades = organiza_cidades(cidades) #organiza as cidades por nivel de risco
+
+
+    # Definir os veiculos
+    Carro=Veiculo(1,"Braga","Carro",100,100,1000,1000)
+    Carrinha=Veiculo(2,"Braga","Carrinha",200,0,2000,2000)
+    Camiao=Veiculo(3,"Braga","Camiao",500,0,5000,5000)
+
+    veiculos=[Carro,Carrinha,Camiao]
+    
+    #definir o grafo
     graph = Graph(directed=False)
 
-    # for node in nodes:
-    #     graph.add_node(node)
 
-    graph.add_edge(Povoa_de_VarzimN, MaiaN, 32)
-    graph.add_edge(MaiaN, Santo_TirsoN, 23)
-    graph.add_edge(Santo_TirsoN, LousadaN, 32)
-    graph.add_edge(LousadaN, AmaranteN, 27)
-    graph.add_edge(LousadaN, Marco_de_CanavesesN, 21)
-    graph.add_edge(MaiaN, PortoN, 11)
-    graph.add_edge(PortoN, Santa_Maria_da_FeiraN, 34)
-    graph.add_edge(Santa_Maria_da_FeiraN, OvarN, 11)
-    graph.add_edge(AncoraN, Viana_do_CasteloN, 10)
-    graph.add_edge(Viana_do_CasteloN, Pte_LimaN, 5)
-    graph.add_edge(Viana_do_CasteloN, EsposendeN, 15)
-    graph.add_edge(Pte_LimaN, BragaN, 5)
-    graph.add_edge(BragaN, P_LanhosoN, 10)
-    graph.add_edge(BragaN, BarcelosN, 15)
-    graph.add_edge(BragaN, GuimaraesN, 10)
-    graph.add_edge(GuimaraesN, FamalicaoN, 5)
-    graph.add_edge(BarcelosN, BragaN, 5)
-    graph.add_edge(BarcelosN, EsposendeN, 5)
+    graph.add_edge("Povoa de Varzim", "Maia", 32)
+    graph.add_edge("Maia", "Santo Tirso", 23)
+    graph.add_edge("Santo Tirso", "Lousada", 32)
+    graph.add_edge("Lousada", "Amarante", 27)
+    graph.add_edge("Lousada", "Marco de Canaveses", 21)
+    graph.add_edge("Maia", "Porto", 11)
+    graph.add_edge("Porto", "Santa Maria da Feira", 34)
+    graph.add_edge("Santa Maria da Feira", "Ovar", 11)
+    graph.add_edge("Ancora", "Viana do Castelo", 10)
+    graph.add_edge("Viana do Castelo", "Pte Lima", 5)
+    graph.add_edge("Viana do Castelo", "Esposende", 15)
+    graph.add_edge("Pte Lima", "Braga", 5)
+    graph.add_edge("Braga", "P Lanhoso", 10)
+    graph.add_edge("Braga", "Barcelos", 15)
+    graph.add_edge("Braga", "Guimaraes", 10)
+    graph.add_edge("Guimaraes", "Famalicao", 5)
+    graph.add_edge("Barcelos", "Esposende", 5)
+    graph.add_edge("Braga", "Famalicao", 10)
+    graph.add_edge("Esposende", "Povoa de Varzim", 15)
+    graph.add_edge("Santo Tirso", "Famalicao", 10)
+    graph.add_edge("Amarante", "Marco de Canaveses", 10)
+    graph.add_edge("Guimaraes", "Amarante", 25)
+
 
     saida = -1
     while saida != 0:
@@ -98,6 +79,9 @@ def main():
         print("6-BFS")
         print("7-A*")
         print("8-Gulosa")
+        print("9-Melhor Algoritmo")
+        print("10-Melhor Caminho")
+        print("11-Melhor Caminho com veiculo")
         print("0-Saír")
 
         saida = int(input("introduza a sua opcao-> "))
@@ -133,6 +117,18 @@ def main():
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
             print(graph.greedy(inicio, fim))
+            l = input("prima enter para continuar")
+        elif saida == 9:
+            inicio = input("Nodo inicial->")
+            fim = input("Nodo final->")
+            print(graph.melhor_algoritmo(inicio, fim))
+            l = input("prima enter para continuar")
+        elif saida == 10:
+            print(graph.melhor_caminho(cidades,veiculos))
+            l = input("prima enter para continuar")
+        elif saida == 11:
+            fim = input("Nodo inicial->")
+            print(graph.melhor_veiculo(veiculos,fim))
             l = input("prima enter para continuar")
         else:
             print("you didn't add anything")

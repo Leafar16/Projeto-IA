@@ -29,4 +29,7 @@ class Cidade:
     
     def incrementa_tempo_decorrido(self):
         self.tempo_decorrido += 1
-    
+
+def organiza_cidades(cidades):
+    cidades_organizadas = sorted(cidades, key=lambda x: x.nivel_risco, reverse=True)
+    return cidades_organizadas

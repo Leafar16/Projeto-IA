@@ -5,7 +5,9 @@ from queue import Queue
 import networkx as nx  # biblioteca de tratamento de grafos necessária para desnhar graficamente o grafo
 import matplotlib.pyplot as plt  # idem
 
+from Veiculo import Veiculo
 from Node import Node
+import random
 
 
 # Constructor
@@ -87,10 +89,13 @@ class Graph:
         else:
             n2 = self.get_node_by_name(node2)
 
-        self.m_graph[node1].append((node2, weight))  # 
+        weight_multiplier = random.choice([1, 1.5, 1.7])
+        total_cost = weight * weight_multiplier        
+        self.m_graph[node1].append((node2, total_cost))  # 
+        
 
         if not self.m_directed:
-            self.m_graph[node2].append((node1, weight))
+            self.m_graph[node2].append((node1, total_cost))
 
     #############################
     # devolver nodos
@@ -373,5 +378,68 @@ class Graph:
 
 
 
+    ##########################################
+    #   Escolhe a melhor algoritmo
+    ##########################################
+    def melhor_algoritmo(self,start,end):
+        #BFS    
+        (bfs_path,bfs_cost) = self.procura_BFS(start,end)
+        #DFS
+        dfs_result = self.procura_DFS(start, end)
+        if dfs_result is None:
+            dfs_path, dfs_cost = [], float('inf')
+        else:
+            dfs_path, dfs_cost = dfs_result
+        #A*
+        a_star_result = self.procura_aStar(start, end)
+        if a_star_result is None:
+            a_star_path, a_star_cost = [], float('inf')
+        else:
+            a_star_path, a_star_cost = a_star_result
+        if min(bfs_cost, dfs_cost, a_star_cost) == bfs_cost:
+            return (bfs_path, bfs_cost)
+        elif min(bfs_cost, dfs_cost, a_star_cost) == dfs_cost:
+            return (dfs_path, dfs_cost)
+        else:
+            return (a_star_path, a_star_cost)
 
 
+
+    ##########################################
+    #   Escolhe o melhor veiculo
+    ##########################################
+    def melhor_veiculo(self, veiculos, cidade):
+        (melhor_caminho, melhor_custo, melhor_veiculo) = ([], float('inf'), None)
+        for veiculo in veiculos:
+            (caminho, custo) = self.melhor_algoritmo(veiculo.local, cidade)
+            
+            if(custo>veiculo.km_atual):#se o veiculo nao tiver combustivel suficiente
+                break
+
+            if custo < melhor_custo:
+                melhor_caminho = caminho
+                melhor_custo = custo
+                melhor_veiculo = veiculo
+
+        if melhor_veiculo:
+            melhor_veiculo.local = cidade
+            melhor_veiculo.km_atual -= melhor_custo
+
+            for i in range(len(veiculos)):
+                if veiculos[i].id == melhor_veiculo.id:
+                    veiculos[i] = melhor_veiculo
+                    break
+        return melhor_caminho, melhor_custo, melhor_veiculo.tipo
+
+
+    ##########################################
+    #   Escolhe o melhor caminho
+    ##########################################
+    def melhor_caminho(self, cidades, veiculos):
+        caminho = []
+        custo = 0
+        for cidade in cidades:
+            path, cost, veiculo = self.melhor_veiculo(veiculos, cidade.nome)
+            caminho.append((path, veiculo))
+            custo += cost
+        return caminho, custo
