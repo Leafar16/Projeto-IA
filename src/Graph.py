@@ -67,8 +67,8 @@ class Graph:
         listaA = ""
         lista = self.m_graph.keys()
         for nodo in lista:
-            for (nodo2, custo,peso,geo) in self.m_graph[nodo]:
-                listaA = listaA + nodo + " ->" + nodo2 + " custo:" + str(custo) + " Geo: " + geo.value + "\n"
+            for (nodo2, custo,peso,geo,met) in self.m_graph[nodo]:
+                listaA = listaA + nodo + " ->" + nodo2 + " custo:" + str(custo) + " Geo: " + geo.value + " Met: " + met.name + "\n"
         return listaA
 
     ################
@@ -255,7 +255,7 @@ class Graph:
     #    A*
     ##########################################
 
-    def procura_aStar(self, start, end):
+    def procura_aStar(self, start, end,veiculo):
         # open_list é uma lista de nós que foram visitados, mas cujos vizinhos não foram inspeccionados, começa com o nó inicial
         # closed_list é uma lista de nós que foram visitados e cujos os vizinhos foram inspeccionados
         open_list = {start}
@@ -298,6 +298,7 @@ class Graph:
             # para todos os vizinhos do nó atual
             for (m, total_cost,weight, geografia,met) in self.getNeighbours(n):  
                 # se o nó atual não estiver em open_list e closed_list, adicione-se a open_list 
+               if self.pode_atravessar(veiculo,geografia,met):
                 if m not in open_list and m not in closed_list:
                     open_list.add(m)
                     parents[m] = n
@@ -406,7 +407,7 @@ class Graph:
         else:
             dfs_path, dfs_cost = dfs_result
         #A*
-        a_star_result = self.procura_aStar(start, end)
+        a_star_result = self.procura_aStar(start, end,veiculo)
         if a_star_result is None:
             a_star_path, a_star_cost = [], float('inf')
         else:
@@ -496,14 +497,15 @@ class Graph:
         while True:
             for node1 in self.m_graph:
                 for i, (node2, _, weight,g,met) in enumerate(self.m_graph[node1]):
-                    weather_multiplier = random.choice([Weather.CLEAR, Weather.RAIN, Weather.STORM]).value
+                    met_new = random.choices([Weather.CLEAR, Weather.RAIN, Weather.STORM],weights=[50, 35, 15],k=1)[0]
+                    weather_multiplier = met_new.value
                     total_cost = weight * weather_multiplier
                     total_cost = int(total_cost)
-                    self.m_graph[node1][i] = (node2, total_cost,weight,g,met)
+                    self.m_graph[node1][i] = (node2, total_cost,weight,g,met_new)
                     if not self.m_directed:
                         for j, (n1, _,peso,geo,met) in enumerate(self.m_graph[node2]):
                             if n1 == node1:
-                                self.m_graph[node2][j] = (node1, total_cost,peso,geo,met)
+                                self.m_graph[node2][j] = (node1, total_cost,peso,geo,met_new)
                                 break
             print("Updated edge weights")
             time.sleep(20)
@@ -518,7 +520,7 @@ class Graph:
     #   Verifica se um veículo pode atravessar uma aresta
     #################################
     def pode_atravessar(self,veiculo,geografia,meteorologia):
-        if veiculo.tipo == "Carro" or veiculo.tipo == "Carrinha":
+        if veiculo.tipo == "Carro" or veiculo.tipo == "Carrinha" or veiculo.tipo == "Camiao":
             if geografia == Geografia.RIO:
                 return False
         if veiculo.tipo=="Helicoptero":

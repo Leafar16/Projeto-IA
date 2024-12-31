@@ -38,5 +38,5 @@ class Cidade:
     
 
 def organiza_cidades(cidades):
-    cidades_organizadas = sorted(cidades, key=lambda x: x.nivel_risco, reverse=True)
+    cidades_organizadas = sorted(cidades, key=lambda x: x.nivel_risco*0.6+(x.populacao_necessitada/x.populacao_total)*0.3+x.necessidades*0.1, reverse=True)
     return cidades_organizadas

@@ -39,6 +39,7 @@ def main():
     Carro=Veiculo("Carro1","Braga","Carro",1000,1000,1000,1000,90)
     Carrinha=Veiculo("Carrinha1","Braga","Carrinha",2000,2000,2000,2000,70)
     Camiao=Veiculo("Camiao1","Braga","Camiao",5000,5000,5000,5000,60)
+    Helicoptero=Veiculo("Helicoptero1","Braga","Helicoptero",1500,1500,1500,1500,100)
 
     veiculos=[Carro,Carrinha,Camiao]
     
@@ -105,7 +106,8 @@ def main():
         elif saida == 5:
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.procura_DFS(inicio,fim,Carro, path=[], visited=set()))
+            Helicoptero2 = copy.deepcopy(Helicoptero)
+            print(graph.procura_DFS(inicio,fim,Helicoptero2, path=[], visited=set()))
             l = input("prima enter para continuar")
         elif saida == 6:
             inicio = input("Nodo inicial->")
@@ -116,7 +118,7 @@ def main():
         elif saida == 7:
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.procura_aStar(inicio, fim,Carrinha))
+            print(graph.procura_aStar(inicio, fim,Carro))
             l = input("prima enter para continuar")
         elif saida == 8:
             inicio = input("Nodo inicial->")
