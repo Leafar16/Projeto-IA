@@ -2,9 +2,10 @@ from Graph import Graph
 from Node import Node
 from Cidades import *
 from Veiculo import *
+import copy
+
 
 def main():
-    #g = Graph()
 
     # Definir as cidades
     Ancora = Cidade("Ancora", 2, 400, 1000, 200, 0)
@@ -35,15 +36,15 @@ def main():
 
 
     # Definir os veiculos
-    Carro=Veiculo(1,"Braga","Carro",100,100,1000,1000)
-    Carrinha=Veiculo(2,"Braga","Carrinha",200,0,2000,2000)
-    Camiao=Veiculo(3,"Braga","Camiao",500,0,5000,5000)
+    Carro=Veiculo(1,"Braga","Carro",1000,1000,1000,1000)
+    Carrinha=Veiculo(2,"Braga","Carrinha",2000,2000,2000,2000)
+    Camiao=Veiculo(3,"Braga","Camiao",5000,5000,5000,5000)
 
     veiculos=[Carro,Carrinha,Camiao]
     
     #definir o grafo
     graph = Graph(directed=False)
-
+    #graph.start_updating_weights()
 
     graph.add_edge("Povoa de Varzim", "Maia", 32)
     graph.add_edge("Maia", "Santo Tirso", 23)
@@ -124,10 +125,13 @@ def main():
             print(graph.melhor_algoritmo(inicio, fim))
             l = input("prima enter para continuar")
         elif saida == 10:
-            print(graph.melhor_caminho(cidades,veiculos))
+            veiculos_new = copy.deepcopy(veiculos)
+            cidades_new = copy.deepcopy(cidades)
+            print(graph.melhor_caminho(cidades_new,veiculos_new))
             l = input("prima enter para continuar")
         elif saida == 11:
-            fim = input("Nodo inicial->")
+            fim = input("Nodo final->")
+            veiculos_new = copy.deepcopy(veiculos)
             print(graph.melhor_veiculo(veiculos,fim))
             l = input("prima enter para continuar")
         else:

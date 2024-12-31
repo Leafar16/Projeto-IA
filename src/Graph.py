@@ -1,11 +1,15 @@
 # Classe grafo para representaçao de grafos,
 import math
 from queue import Queue
+import threading
+import time
+
 
 import networkx as nx  # biblioteca de tratamento de grafos necessária para desnhar graficamente o grafo
 import matplotlib.pyplot as plt  # idem
 
-from Veiculo import Veiculo
+from Weather import Weather
+from Veiculo import *
 from Node import Node
 import random
 
@@ -54,9 +58,9 @@ class Graph:
           
         return None
 
-    ##############################3
+    ################################
     #   imprimir arestas
-    ############################333333
+    ################################
 
     def imprime_aresta(self):
         listaA = ""
@@ -89,9 +93,10 @@ class Graph:
         else:
             n2 = self.get_node_by_name(node2)
 
-        weight_multiplier = random.choice([1, 1.5, 1.7])
-        total_cost = weight * weight_multiplier        
-        self.m_graph[node1].append((node2, total_cost))  # 
+        weather_multiplier = random.choice([Weather.CLEAR, Weather.RAIN, Weather.STORM]).value
+        total_cost =  weight * weather_multiplier        
+        total_cost = int(total_cost)
+        self.m_graph[node1].append((node2, total_cost))  #
         
 
         if not self.m_directed:
@@ -411,10 +416,12 @@ class Graph:
     def melhor_veiculo(self, veiculos, cidade):
         (melhor_caminho, melhor_custo, melhor_veiculo) = ([], float('inf'), None)
         for veiculo in veiculos:
+            print(f"Checking vehicle {veiculo.tipo} at {veiculo.local} with {veiculo.km_atual} km left and {veiculo.carga_transportada} carga")
+
             (caminho, custo) = self.melhor_algoritmo(veiculo.local, cidade)
             
-            if(custo>veiculo.km_atual):#se o veiculo nao tiver combustivel suficiente
-                break
+            if(custo>veiculo.km_atual or veiculo.carga_transportada==0):#se o veiculo nao tiver combustivel suficiente nao avanca
+                continue
 
             if custo < melhor_custo:
                 melhor_caminho = caminho
@@ -429,17 +436,61 @@ class Graph:
                 if veiculos[i].id == melhor_veiculo.id:
                     veiculos[i] = melhor_veiculo
                     break
-        return melhor_caminho, melhor_custo, melhor_veiculo.tipo
+        return melhor_caminho, melhor_custo, melhor_veiculo
 
 
     ##########################################
     #   Escolhe o melhor caminho
     ##########################################
     def melhor_caminho(self, cidades, veiculos):
-        caminho = []
-        custo = 0
+     caminho = []
+     custo = 0
+     while(cidades and veiculos_sem_carga(veiculos)):
         for cidade in cidades:
+            if cidade.necessidades==0:
+                cidades.remove(cidade)
+                continue
+            
             path, cost, veiculo = self.melhor_veiculo(veiculos, cidade.nome)
-            caminho.append((path, veiculo))
+            
+            if veiculo is None:
+                continue
+            deposito=veiculo.depositar(cidade.necessidades)
+            cidade.decrementa_necessidades(deposito)
+            
+            if cidade.verifica_necessidades==0:
+                cidades.remove(cidade)
+            caminho.append((path, veiculo.tipo,veiculo.km_atual,veiculo.carga_transportada))
             custo += cost
-        return caminho, custo
+        
+     return caminho, custo
+
+         
+    # def update_edge_weights(self):
+    #     while True:
+    #         for node1 in self.m_graph:
+    #             for i, (node2, _) in enumerate(self.m_graph[node1]):
+    #                 weather_multiplier = random.choice([Weather.CLEAR, Weather.RAIN, Weather.STORM]).value
+    #                 weight = self.get_original_weight(node1, node2)  # Assuming you have a method to get the original weight
+    #                 total_cost = weight * weather_multiplier
+    #                 total_cost = int(total_cost)
+    #                 self.m_graph[node1][i] = (node2, total_cost)
+    #                 if not self.m_directed:
+    #                     for j, (n1, _) in enumerate(self.m_graph[node2]):
+    #                         if n1 == node1:
+    #                             self.m_graph[node2][j] = (node1, total_cost)
+    #                             break
+    #         print("Updated edge weights")
+    #         time.sleep(20)
+
+
+    # def get_original_weight(self, node1, node2):
+    #     for (nodo, custo) in self.m_graph[node1]:
+    #         if nodo == node2:
+    #             return custo
+    #     return math.inf
+
+    # def start_updating_weights(self):
+    #     thread = threading.Thread(target=self.update_edge_weights)
+    #     thread.daemon = True
+    #     thread.start()
