@@ -31,7 +31,11 @@ class Cidade:
         self.tempo_decorrido += 1
 
     def decrementa_necessidades(self, necessidades):
+        if necessidades<0:
+            return 0
         self.necessidades -= necessidades and self.necessidades >= 0
+
+    
 
 def organiza_cidades(cidades):
     cidades_organizadas = sorted(cidades, key=lambda x: x.nivel_risco, reverse=True)

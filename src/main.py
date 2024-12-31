@@ -2,6 +2,7 @@ from Graph import Graph
 from Node import Node
 from Cidades import *
 from Veiculo import *
+from Geografia import *
 import copy
 
 
@@ -34,42 +35,44 @@ def main():
 
     cidades = organiza_cidades(cidades) #organiza as cidades por nivel de risco
 
-
     # Definir os veiculos
-    Carro=Veiculo(1,"Braga","Carro",1000,1000,1000,1000)
-    Carrinha=Veiculo(2,"Braga","Carrinha",2000,2000,2000,2000)
-    Camiao=Veiculo(3,"Braga","Camiao",5000,5000,5000,5000)
+    Carro=Veiculo("Carro1","Braga","Carro",1000,1000,1000,1000,90)
+    Carrinha=Veiculo("Carrinha1","Braga","Carrinha",2000,2000,2000,2000,70)
+    Camiao=Veiculo("Camiao1","Braga","Camiao",5000,5000,5000,5000,60)
 
     veiculos=[Carro,Carrinha,Camiao]
     
     #definir o grafo
     graph = Graph(directed=False)
-    #graph.start_updating_weights()
+    graph.start_updating_weights()
 
-    graph.add_edge("Povoa de Varzim", "Maia", 32)
-    graph.add_edge("Maia", "Santo Tirso", 23)
-    graph.add_edge("Santo Tirso", "Lousada", 32)
-    graph.add_edge("Lousada", "Amarante", 27)
-    graph.add_edge("Lousada", "Marco de Canaveses", 21)
-    graph.add_edge("Maia", "Porto", 11)
-    graph.add_edge("Porto", "Santa Maria da Feira", 34)
-    graph.add_edge("Santa Maria da Feira", "Ovar", 11)
-    graph.add_edge("Ancora", "Viana do Castelo", 10)
-    graph.add_edge("Viana do Castelo", "Pte Lima", 5)
-    graph.add_edge("Viana do Castelo", "Esposende", 15)
-    graph.add_edge("Pte Lima", "Braga", 5)
-    graph.add_edge("Braga", "P Lanhoso", 10)
-    graph.add_edge("Braga", "Barcelos", 15)
-    graph.add_edge("Braga", "Guimaraes", 10)
-    graph.add_edge("Guimaraes", "Famalicao", 5)
-    graph.add_edge("Barcelos", "Esposende", 5)
-    graph.add_edge("Braga", "Famalicao", 10)
-    graph.add_edge("Esposende", "Povoa de Varzim", 15)
-    graph.add_edge("Santo Tirso", "Famalicao", 10)
-    graph.add_edge("Amarante", "Marco de Canaveses", 10)
-    graph.add_edge("Guimaraes", "Amarante", 25)
+    graph.add_edge("Povoa de Varzim", "Maia", 32, Geografia.PLANICIE)
+    graph.add_edge("Maia", "Santo Tirso", 23, Geografia.PLANICIE)
+    graph.add_edge("Santo Tirso", "Lousada", 32, Geografia.MONTANHA)
+    graph.add_edge("Lousada", "Amarante", 27, Geografia.MONTANHA)
+    graph.add_edge("Lousada", "Marco de Canaveses", 21, Geografia.RIO)
+    graph.add_edge("Maia", "Porto", 11, Geografia.PLANICIE)
+    graph.add_edge("Porto", "Santa Maria da Feira", 34, Geografia.PLANICIE)
+    graph.add_edge("Santa Maria da Feira", "Ovar", 11, Geografia.PLANICIE)
+    graph.add_edge("Ancora", "Viana do Castelo", 10, Geografia.PLANICIE)
+    graph.add_edge("Viana do Castelo", "Pte Lima", 5, Geografia.RIO)
+    graph.add_edge("Viana do Castelo", "Esposende", 15, Geografia.PLANICIE)
+    graph.add_edge("Pte Lima", "Braga", 5, Geografia.MONTANHA)
+    graph.add_edge("Braga", "P Lanhoso", 10, Geografia.MONTANHA)
+    graph.add_edge("Braga", "Barcelos", 15, Geografia.RIO)
+    graph.add_edge("Braga", "Guimaraes", 10, Geografia.PLANICIE)
+    graph.add_edge("Guimaraes", "Famalicao", 5, Geografia.PLANICIE)
+    graph.add_edge("Barcelos", "Esposende", 5, Geografia.PLANICIE)
+    graph.add_edge("Braga", "Famalicao", 10, Geografia.PLANICIE)
+    graph.add_edge("Esposende", "Povoa de Varzim", 15, Geografia.PLANICIE)
+    graph.add_edge("Santo Tirso", "Famalicao", 10, Geografia.PLANICIE)
+    graph.add_edge("Amarante", "Marco de Canaveses", 10, Geografia.RIO)
+    graph.add_edge("Guimaraes", "Amarante", 25, Geografia.MONTANHA)
 
+    #definir heuristica
+    #graph.add_heuristica("Povoa de Varzim",calcula_heuristica("Povoa de Varzim",cidades))
 
+    #menu
     saida = -1
     while saida != 0:
         print("1-Imprimir Grafo")
@@ -97,22 +100,23 @@ def main():
             print(graph.m_graph.keys())
             l = input("prima enter para continuar")
         elif saida == 4:
-            print(g.imprime_aresta())
+            print(graph.imprime_aresta())
             l = input("prima enter para continuar")
         elif saida == 5:
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.procura_DFS(inicio, fim, path=[], visited=set()))
+            print(graph.procura_DFS(inicio,fim,Carro, path=[], visited=set()))
             l = input("prima enter para continuar")
         elif saida == 6:
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.procura_BFS(inicio, fim))
+            print(graph.procura_BFS(inicio,fim,Carro))
+            print(Carro.local)
             l = input("prima enter para continuar")
         elif saida == 7:
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.procura_aStar(inicio, fim))
+            print(graph.procura_aStar(inicio, fim,Carrinha))
             l = input("prima enter para continuar")
         elif saida == 8:
             inicio = input("Nodo inicial->")
@@ -120,14 +124,21 @@ def main():
             print(graph.greedy(inicio, fim))
             l = input("prima enter para continuar")
         elif saida == 9:
-            inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.melhor_algoritmo(inicio, fim))
+            print(graph.melhor_algoritmo(fim,Carro))
             l = input("prima enter para continuar")
         elif saida == 10:
             veiculos_new = copy.deepcopy(veiculos)
             cidades_new = copy.deepcopy(cidades)
-            print(graph.melhor_caminho(cidades_new,veiculos_new))
+            (caminho, custo) = graph.melhor_caminho(cidades_new, veiculos_new)
+            
+            for tipo_veiculo, detalhes in caminho.items(): #imprimir os caminhos de cada veiculo
+                print(f"Veiculo: {tipo_veiculo}")
+                for detalhe in detalhes:
+                    print(f"Caminho: {detalhe[0]}, KM Atual: {detalhe[1]}, Carga Transportada: {detalhe[2]}")
+                print("\n")
+            print(f"Custo Total: {custo}")
+
             l = input("prima enter para continuar")
         elif saida == 11:
             fim = input("Nodo final->")
