@@ -98,8 +98,8 @@ class Graph:
             n2 = self.get_node_by_name(node2)
 
         weather = random.choices(
-            [Weather.CLEAR, Weather.RAIN, Weather.STORM],
-            weights=[50, 35, 15],
+            [Weather.CLEAR, Weather.RAIN, Weather.STORM,Weather.BLOCKED],
+            weights=[50, 30, 15,5],
             k=1
         )[0]
         weather_multiplier = weather.value
@@ -336,7 +336,7 @@ class Graph:
     ##########################################
 
 
-    def greedy(self, start, end):
+    def greedy(self, start, end,veiculo):
         
         open_list = set([start])
         closed_list = set([])
@@ -375,9 +375,10 @@ class Graph:
                 return (reconst_path, self.calcula_custo(reconst_path))
             # para todos os vizinhos  do nodo corrente
             
-            for (m, weight) in self.getNeighbours(n):
+            for (m, total_cost, weight, geografia, met) in self.getNeighbours(n):
                 # Se o nodo corrente nao esta na open nem na closed list
                 # adiciona-lo à open_list e marcar o antecessor
+             if self.pode_atravessar(veiculo,geografia,met):
                 if m not in open_list and m not in closed_list:
                     open_list.add(m)
                     parents[m] = n
@@ -413,7 +414,11 @@ class Graph:
         else:
             a_star_path, a_star_cost = a_star_result
         #greedy
-
+        greedy_result = self.greedy(start, end,veiculo)
+        if greedy_result is None:
+            greedy_path, greedy_cost = [], float('inf')
+        else:
+            greedy_path, greedy_cost = greedy_result
         #escolher o melhor algoritmo
         if min(bfs_cost, dfs_cost, a_star_cost) == bfs_cost:
             return (bfs_path, bfs_cost)
@@ -526,6 +531,44 @@ class Graph:
         if veiculo.tipo=="Helicoptero":
             if meteorologia == Weather.STORM:
                 return False
+        if meteorologia == Weather.BLOCKED:
+            return False
         return True
 
     
+    #########################
+    # Heuristica
+    #########################
+
+    def calcula_heuristica(self,cidade):
+        return cidade.nivel_risco*50
+
+    def remove_heuristica(self, n):
+        if n in self.m_h:
+            del self.m_h[n]
+    
+    def update_heuristica(self, cidades):
+        while True:
+            for cidade in cidades:
+                new_heuristica = self.calcula_heuristica(cidade)
+                self.add_heuristica(cidade.nome, new_heuristica)
+            time.sleep(1)
+    
+        
+    def start_updating_heuristica(self, cidades):
+        thread = threading.Thread(target=self.update_heuristica, args=(cidades,))
+        thread.daemon = True
+        thread.start()
+
+    #########################
+    # Risco
+    #########################
+    def update_risco(self, cidades):
+        while True:
+            for cidade in cidades:
+                cidade.calcula_risco()
+
+    def start_updating_risco(self, cidades):
+        thread = threading.Thread(target=self.update_risco, args=(cidades,))
+        thread.daemon = True
+        thread.start()

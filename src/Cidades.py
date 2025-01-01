@@ -1,13 +1,25 @@
 
 class Cidade:
 
-    def __init__(self, nome, nivel_risco, populacao_necessitada, populacao_total, necessidades, tempo_critico):
+    def __init__(self, nome, populacao_necessitada, populacao_total, necessidades, tempo_critico):
         self.nome = nome
-        self.nivel_risco = nivel_risco
+        self.nivel_risco = 0
         self.populacao_necessitada = populacao_necessitada
         self.necessidades = necessidades
         self.populacao_total = populacao_total
         self.tempo_critico = tempo_critico
+        self.calcula_risco()
+
+    def calcula_risco(self):
+        ratio = self.populacao_necessitada / self.populacao_total
+        if ratio == 0:
+            self.nivel_risco = 0
+        elif ratio < 0.2:
+            self.nivel_risco = 1
+        elif ratio < 0.5:
+            self.nivel_risco = 2
+        else:
+            self.nivel_risco = 3
 
     def verifica_necessidades(self, necessidades):
          self.necessidades = necessidades
@@ -38,5 +50,5 @@ class Cidade:
     
 
 def organiza_cidades(cidades):
-    cidades_organizadas = sorted(cidades, key=lambda x: x.nivel_risco*0.6+(x.populacao_necessitada/x.populacao_total)*0.3+x.necessidades*0.1, reverse=True)
+    cidades_organizadas = sorted(cidades, key=lambda x: x.nivel_risco, reverse=True)
     return cidades_organizadas

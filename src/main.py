@@ -9,24 +9,24 @@ import copy
 def main():
 
     # Definir as cidades
-    Ancora = Cidade("Ancora", 2, 400, 1000, 200, 0)
-    Pte_Lima = Cidade("Pte Lima", 1, 100, 2000, 10, 0)
-    Braga = Cidade("Braga", 0, 0, 3000, 0, 0)
-    P_Lanhoso = Cidade("P Lanhoso", 3, 1000, 1500, 500, 0)
-    Barcelos = Cidade("Barcelos", 0, 0, 2500, 0, 0)
-    Esposende = Cidade("Esposende", 2, 300, 1200, 150, 0)
-    Famalicao = Cidade("Famalicao", 0, 0, 2200, 0, 0)
-    Guimaraes = Cidade("Guimaraes", 1, 270, 2700, 135, 0)
-    Viana_do_Castelo = Cidade("Viana do Castelo", 3, 1500, 1800, 750, 0)
-    Povoa_de_Varzim = Cidade("Povoa de Varzim", 0, 0, 2000, 0, 0)
-    Santo_Tirso = Cidade("Santo Tirso", 2, 500, 1500, 600, 0)
-    Amarante = Cidade("Amarante", 1, 200, 1000, 350, 0)
-    Maia = Cidade("Maia", 0, 0, 3000, 0, 0)
-    Lousada = Cidade("Lousada", 3, 1000, 1500, 500, 0)
-    Marco_de_Canaveses = Cidade("Marco de Canaveses", 0, 0, 2500, 0, 0)
-    Porto = Cidade("Porto", 2, 300, 1200, 150, 0)
-    Santa_Maria_da_Feira = Cidade("Santa Maria da Feira", 0, 0, 2200, 0, 0)
-    Ovar = Cidade("Ovar", 1, 270, 2700, 135, 0)
+    Ancora = Cidade("Ancora", 400, 1000, 200, 0)
+    Pte_Lima = Cidade("Pte Lima", 100, 2000, 10, 0)
+    Braga = Cidade("Braga", 0, 3000, 0, 0)
+    P_Lanhoso = Cidade("P Lanhoso", 1000, 1500, 500, 0)
+    Barcelos = Cidade("Barcelos", 0, 2500, 0, 0)
+    Esposende = Cidade("Esposende", 300, 1200, 150, 0)
+    Famalicao = Cidade("Famalicao", 0, 2200, 0, 0)
+    Guimaraes = Cidade("Guimaraes", 270, 2700, 135, 0)
+    Viana_do_Castelo = Cidade("Viana do Castelo", 1500, 1800, 750, 0)
+    Povoa_de_Varzim = Cidade("Povoa de Varzim", 0, 2000, 0, 0)
+    Santo_Tirso = Cidade("Santo Tirso", 500, 1500, 600, 0)
+    Amarante = Cidade("Amarante", 200, 1000, 350, 0)
+    Maia = Cidade("Maia", 0, 3000, 0, 0)
+    Lousada = Cidade("Lousada", 1000, 1500, 500, 0)
+    Marco_de_Canaveses = Cidade("Marco de Canaveses", 0, 2500, 0, 0)
+    Porto = Cidade("Porto", 300, 1200, 150, 0)
+    Santa_Maria_da_Feira = Cidade("Santa Maria da Feira", 0, 2200, 0, 0)
+    Ovar = Cidade("Ovar", 270, 2700, 135, 0)
 
     cidades=[Ancora, Pte_Lima, Braga, P_Lanhoso, Barcelos, 
     Esposende, Famalicao, Guimaraes, Viana_do_Castelo, 
@@ -36,7 +36,7 @@ def main():
     cidades = organiza_cidades(cidades) #organiza as cidades por nivel de risco
 
     # Definir os veiculos
-    Carro=Veiculo("Carro1","Braga","Carro",1000,1000,1000,1000,90)
+    Carro=Veiculo("Carro1","Braga","Carro",1000,1000,1000,20,90)
     Carrinha=Veiculo("Carrinha1","Braga","Carrinha",2000,2000,2000,2000,70)
     Camiao=Veiculo("Camiao1","Braga","Camiao",5000,5000,5000,5000,60)
     Helicoptero=Veiculo("Helicoptero1","Braga","Helicoptero",1500,1500,1500,1500,100)
@@ -46,6 +46,8 @@ def main():
     #definir o grafo
     graph = Graph(directed=False)
     graph.start_updating_weights()
+    graph.start_updating_heuristica(cidades)
+    graph.start_updating_risco(cidades)
 
     graph.add_edge("Povoa de Varzim", "Maia", 32, Geografia.PLANICIE)
     graph.add_edge("Maia", "Santo Tirso", 23, Geografia.PLANICIE)
@@ -71,7 +73,25 @@ def main():
     graph.add_edge("Guimaraes", "Amarante", 25, Geografia.MONTANHA)
 
     #definir heuristica
-    #graph.add_heuristica("Povoa de Varzim",calcula_heuristica("Povoa de Varzim",cidades))
+    graph.add_heuristica("Povoa de Varzim", graph.calcula_heuristica(Povoa_de_Varzim))
+    graph.add_heuristica("Maia", graph.calcula_heuristica(Maia))
+    graph.add_heuristica("Santo Tirso", graph.calcula_heuristica(Santo_Tirso))
+    graph.add_heuristica("Lousada", graph.calcula_heuristica(Lousada))
+    graph.add_heuristica("Amarante", graph.calcula_heuristica(Amarante))
+    graph.add_heuristica("Marco de Canaveses", graph.calcula_heuristica(Marco_de_Canaveses))
+    graph.add_heuristica("Porto", graph.calcula_heuristica(Porto))
+    graph.add_heuristica("Santa Maria da Feira", graph.calcula_heuristica(Santa_Maria_da_Feira))
+    graph.add_heuristica("Ovar", graph.calcula_heuristica(Ovar))
+    graph.add_heuristica("Ancora", graph.calcula_heuristica(Ancora))
+    graph.add_heuristica("Viana do Castelo", graph.calcula_heuristica(Viana_do_Castelo))
+    graph.add_heuristica("Pte Lima", graph.calcula_heuristica(Pte_Lima))
+    graph.add_heuristica("Esposende", graph.calcula_heuristica(Esposende))
+    graph.add_heuristica("Braga", graph.calcula_heuristica(Braga))
+    graph.add_heuristica("P Lanhoso", graph.calcula_heuristica(P_Lanhoso))
+    graph.add_heuristica("Barcelos", graph.calcula_heuristica(Barcelos))
+    graph.add_heuristica("Famalicao", graph.calcula_heuristica(Famalicao))
+    graph.add_heuristica("Guimaraes", graph.calcula_heuristica(Guimaraes))
+
 
     #menu
     saida = -1
@@ -123,7 +143,7 @@ def main():
         elif saida == 8:
             inicio = input("Nodo inicial->")
             fim = input("Nodo final->")
-            print(graph.greedy(inicio, fim))
+            print(graph.greedy(inicio, fim,Carrinha))
             l = input("prima enter para continuar")
         elif saida == 9:
             fim = input("Nodo final->")
@@ -147,6 +167,11 @@ def main():
             veiculos_new = copy.deepcopy(veiculos)
             print(graph.melhor_veiculo(veiculos,fim))
             l = input("prima enter para continuar")
+        elif saida == 12:
+                for cidade in cidades:
+                    print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}")
+                l = input("prima enter para continuar")
+                Braga.populacao_necessitada=200
         else:
             print("you didn't add anything")
             l = input("prima enter para continuar")
