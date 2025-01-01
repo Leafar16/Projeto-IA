@@ -481,8 +481,19 @@ class Graph:
                 cidades.remove(cidade)
             caminho.append((path, veiculo.id,veiculo.km_atual,veiculo.carga_transportada))
             custo += cost
+            custo_cidade=self.calcula_custo_com_risco(path, cidades)
+            custo+=custo_cidade
+
         
      return self.organiza_caminho_por_veiculo(caminho, custo)
+
+    def calcula_custo_com_risco(self, caminho, cidades):
+                    custo = self.calcula_custo(caminho)
+                    for cidade_nome in caminho:
+                        cidade = next((c for c in cidades if c.nome == cidade_nome), None)
+                        if cidade and cidade.nivel_risco > 0:
+                            custo += cidade.nivel_risco * 20
+                    return custo
 
     ##########################################
     #   Organiza caminho por tipo de veiculo
@@ -541,7 +552,7 @@ class Graph:
     #########################
 
     def calcula_heuristica(self,cidade):
-        return cidade.nivel_risco*50
+        return cidade.nivel_risco*20
 
     def remove_heuristica(self, n):
         if n in self.m_h:

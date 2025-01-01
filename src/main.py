@@ -92,10 +92,11 @@ def main():
     graph.add_heuristica("Famalicao", graph.calcula_heuristica(Famalicao))
     graph.add_heuristica("Guimaraes", graph.calcula_heuristica(Guimaraes))
 
-
+    
     #menu
     saida = -1
     while saida != 0:
+
         print("1-Imprimir Grafo")
         print("2-Desenhar Grafo")
         print("3-Imprimir  nodos de Grafo")
@@ -152,6 +153,8 @@ def main():
         elif saida == 10:
             veiculos_new = copy.deepcopy(veiculos)
             cidades_new = copy.deepcopy(cidades)
+            #graph.start_updating_risco(cidades_new)
+            # graph.start_updating_heuristica(cidades_new)
             (caminho, custo) = graph.melhor_caminho(cidades_new, veiculos_new)
             
             for tipo_veiculo, detalhes in caminho.items(): #imprimir os caminhos de cada veiculo
@@ -161,17 +164,15 @@ def main():
                 print("\n")
             print(f"Custo Total: {custo}")
 
+            for cidade in cidades_new:
+                print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}")
+
             l = input("prima enter para continuar")
         elif saida == 11:
             fim = input("Nodo final->")
             veiculos_new = copy.deepcopy(veiculos)
             print(graph.melhor_veiculo(veiculos,fim))
             l = input("prima enter para continuar")
-        elif saida == 12:
-                for cidade in cidades:
-                    print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}")
-                l = input("prima enter para continuar")
-                Braga.populacao_necessitada=200
         else:
             print("you didn't add anything")
             l = input("prima enter para continuar")
