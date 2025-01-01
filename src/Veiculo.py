@@ -32,9 +32,9 @@ class Veiculo:
     return self.km_atual-custo_viagem<=0
 
 
- def viajar(self,tempo_viagem,local_novo):
-    self.km_atual=-tempo_viagem
-    self.local=local_novo
+ def dim_tempo_gasto(self,km):
+    return self.velocidade_media/km
+
 
 
  def __str__(self):

@@ -1,17 +1,18 @@
 
 class Cidade:
 
-    def __init__(self, nome, populacao_necessitada, populacao_total, necessidades, tempo_critico):
+    def __init__(self, nome, populacao_necessitada, populacao_total, tempo_critico):
         self.nome = nome
         self.nivel_risco = 0
         self.populacao_necessitada = populacao_necessitada
-        self.necessidades = necessidades
         self.populacao_total = populacao_total
         self.tempo_critico = tempo_critico
         self.calcula_risco()
 
     def calcula_risco(self):
         ratio = self.populacao_necessitada / self.populacao_total
+        if self.tempo_critico ==0:
+            self.nivel_risco = 4
         if ratio == 0:
             self.nivel_risco = 0
         elif ratio < 0.2:
@@ -42,10 +43,17 @@ class Cidade:
     def incrementa_tempo_decorrido(self):
         self.tempo_decorrido += 1
 
+    def decrementa_tempo_critico(self,tempo):
+        self.tempo_critico -= tempo and self.tempo_critico >= 0
+
     def decrementa_necessidades(self, necessidades):
-        if necessidades<0:
-            return 0
-        self.necessidades -= necessidades and self.necessidades >= 0
+        if necessidades < 0:
+            return
+        self.populacao_necessitada -= necessidades
+        if self.populacao_necessitada < 0:
+            self.populacao_necessitada = 0
+        self.calcula_risco()
+
 
     
 

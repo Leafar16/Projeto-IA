@@ -9,24 +9,24 @@ import copy
 def main():
 
     # Definir as cidades
-    Ancora = Cidade("Ancora", 400, 1000, 200, 0)
-    Pte_Lima = Cidade("Pte Lima", 100, 2000, 10, 0)
-    Braga = Cidade("Braga", 0, 3000, 0, 0)
-    P_Lanhoso = Cidade("P Lanhoso", 1000, 1500, 500, 0)
-    Barcelos = Cidade("Barcelos", 0, 2500, 0, 0)
-    Esposende = Cidade("Esposende", 300, 1200, 150, 0)
-    Famalicao = Cidade("Famalicao", 0, 2200, 0, 0)
-    Guimaraes = Cidade("Guimaraes", 270, 2700, 135, 0)
-    Viana_do_Castelo = Cidade("Viana do Castelo", 1500, 1800, 750, 0)
-    Povoa_de_Varzim = Cidade("Povoa de Varzim", 0, 2000, 0, 0)
-    Santo_Tirso = Cidade("Santo Tirso", 500, 1500, 600, 0)
-    Amarante = Cidade("Amarante", 200, 1000, 350, 0)
-    Maia = Cidade("Maia", 0, 3000, 0, 0)
-    Lousada = Cidade("Lousada", 1000, 1500, 500, 0)
-    Marco_de_Canaveses = Cidade("Marco de Canaveses", 0, 2500, 0, 0)
-    Porto = Cidade("Porto", 300, 1200, 150, 0)
-    Santa_Maria_da_Feira = Cidade("Santa Maria da Feira", 0, 2200, 0, 0)
-    Ovar = Cidade("Ovar", 270, 2700, 135, 0)
+    Ancora = Cidade("Ancora", 1000, 1000, 4)
+    Pte_Lima = Cidade("Pte Lima", 100, 2000, 2.5)
+    Braga = Cidade("Braga", 0, 3000, 0)
+    P_Lanhoso = Cidade("P Lanhoso", 1000, 1500, 2)
+    Barcelos = Cidade("Barcelos", 0, 2500, 0)
+    Esposende = Cidade("Esposende", 300, 1200, 3)
+    Famalicao = Cidade("Famalicao", 0, 2200, 0)
+    Guimaraes = Cidade("Guimaraes", 270, 2700, 5)
+    Viana_do_Castelo = Cidade("Viana do Castelo", 1500, 1800, 3)
+    Povoa_de_Varzim = Cidade("Povoa de Varzim", 0, 2000, 0)
+    Santo_Tirso = Cidade("Santo Tirso", 500, 1500, 2)
+    Amarante = Cidade("Amarante", 200, 1000, 4)
+    Maia = Cidade("Maia", 0, 3000, 0)
+    Lousada = Cidade("Lousada", 1000, 1500, 500)
+    Marco_de_Canaveses = Cidade("Marco de Canaveses", 0, 2500, 0)
+    Porto = Cidade("Porto", 300, 1200, 10)
+    Santa_Maria_da_Feira = Cidade("Santa Maria da Feira", 0, 2200, 0)
+    Ovar = Cidade("Ovar", 270, 2700, 2)
 
     cidades=[Ancora, Pte_Lima, Braga, P_Lanhoso, Barcelos, 
     Esposende, Famalicao, Guimaraes, Viana_do_Castelo, 
@@ -47,7 +47,7 @@ def main():
     graph = Graph(directed=False)
     graph.start_updating_weights()
     graph.start_updating_heuristica(cidades)
-    graph.start_updating_risco(cidades)
+    #graph.start_updating_risco(cidades)
 
     graph.add_edge("Povoa de Varzim", "Maia", 32, Geografia.PLANICIE)
     graph.add_edge("Maia", "Santo Tirso", 23, Geografia.PLANICIE)
@@ -153,8 +153,7 @@ def main():
         elif saida == 10:
             veiculos_new = copy.deepcopy(veiculos)
             cidades_new = copy.deepcopy(cidades)
-            #graph.start_updating_risco(cidades_new)
-            # graph.start_updating_heuristica(cidades_new)
+            
             (caminho, custo) = graph.melhor_caminho(cidades_new, veiculos_new)
             
             for tipo_veiculo, detalhes in caminho.items(): #imprimir os caminhos de cada veiculo
@@ -165,7 +164,8 @@ def main():
             print(f"Custo Total: {custo}")
 
             for cidade in cidades_new:
-                print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}")
+                print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}, População Necessitada: {cidade.populacao_necessitada}")
+                
 
             l = input("prima enter para continuar")
         elif saida == 11:
