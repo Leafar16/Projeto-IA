@@ -9,7 +9,7 @@ import copy
 def main():
 
     # Definir as cidades
-    Ancora = Cidade("Ancora", 1000, 1000, 4)
+    Ancora = Cidade("Ancora", 2000, 10000, 4)
     Pte_Lima = Cidade("Pte Lima", 100, 2000, 2.5)
     Braga = Cidade("Braga", 0, 3000, 0)
     P_Lanhoso = Cidade("P Lanhoso", 1000, 1500, 2)
@@ -36,17 +36,17 @@ def main():
     cidades = organiza_cidades(cidades) #organiza as cidades por nivel de risco
 
     # Definir os veiculos
-    Carro=Veiculo("Carro1","Braga","Carro",1000,1000,1000,20,90)
+    Carro=Veiculo("Carro1","Braga","Carro",1000,1000,1000,1000,90)
     Carrinha=Veiculo("Carrinha1","Braga","Carrinha",2000,2000,2000,2000,70)
     Camiao=Veiculo("Camiao1","Braga","Camiao",5000,5000,5000,5000,60)
     Helicoptero=Veiculo("Helicoptero1","Braga","Helicoptero",1500,1500,1500,1500,100)
 
-    veiculos=[Carro,Carrinha,Camiao]
+
+    veiculos=[Carro,Carrinha,Camiao,Helicoptero]
     
     #definir o grafo
     graph = Graph(directed=False)
     graph.start_updating_weights()
-    graph.start_updating_heuristica(cidades)
     #graph.start_updating_risco(cidades)
 
     graph.add_edge("Povoa de Varzim", "Maia", 32, Geografia.PLANICIE)
@@ -153,9 +153,12 @@ def main():
         elif saida == 10:
             veiculos_new = copy.deepcopy(veiculos)
             cidades_new = copy.deepcopy(cidades)
+            graph.start_updating_heuristica(cidades_new)
+
             
             (caminho, custo) = graph.melhor_caminho(cidades_new, veiculos_new)
-            
+
+            print("\n")
             for tipo_veiculo, detalhes in caminho.items(): #imprimir os caminhos de cada veiculo
                 print(f"Veiculo: {tipo_veiculo}")
                 for detalhe in detalhes:
@@ -168,6 +171,7 @@ def main():
                 
 
             l = input("prima enter para continuar")
+
         elif saida == 11:
             fim = input("Nodo final->")
             veiculos_new = copy.deepcopy(veiculos)

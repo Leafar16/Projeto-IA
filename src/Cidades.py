@@ -7,12 +7,11 @@ class Cidade:
         self.populacao_necessitada = populacao_necessitada
         self.populacao_total = populacao_total
         self.tempo_critico = tempo_critico
+        self.alcancavel=True
         self.calcula_risco()
 
     def calcula_risco(self):
         ratio = self.populacao_necessitada / self.populacao_total
-        if self.tempo_critico ==0:
-            self.nivel_risco = 4
         if ratio == 0:
             self.nivel_risco = 0
         elif ratio < 0.2:

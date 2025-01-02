@@ -319,9 +319,9 @@ class Graph:
 
         return None
 
-    ###################################3
+    ###################################
     # devolve heuristica do nodo
-    ####################################
+    ###################################
 
     def getH(self, nodo):
         if nodo not in self.m_h.keys():
@@ -418,12 +418,14 @@ class Graph:
         else:
             greedy_path, greedy_cost = greedy_result
         #escolher o melhor algoritmo
-        if min(bfs_cost, dfs_cost, a_star_cost) == bfs_cost:
+        if min(bfs_cost, dfs_cost, a_star_cost, greedy_cost) == bfs_cost:
             return (bfs_path, bfs_cost)
-        elif min(bfs_cost, dfs_cost, a_star_cost) == dfs_cost:
+        elif min(bfs_cost, dfs_cost, a_star_cost, greedy_cost) == dfs_cost:
             return (dfs_path, dfs_cost)
-        else:
+        elif min(bfs_cost, dfs_cost, a_star_cost, greedy_cost) == a_star_cost:
             return (a_star_path, a_star_cost)
+        else:
+            return (greedy_path, greedy_cost)
 
 
 
@@ -433,20 +435,22 @@ class Graph:
     def melhor_veiculo(self, veiculos, cidade):
         (melhor_caminho, melhor_custo, melhor_veiculo) = ([], float('inf'), None)
         for veiculo in veiculos:
+            (caminho, custo) = self.melhor_algoritmo(cidade, veiculo)
 
-            # if(cidade.nivel_risco==4):
-            #     continue
-
-            (caminho, custo) = self.melhor_algoritmo(cidade,veiculo)
-            
-
-            if(custo>veiculo.km_atual or veiculo.carga_transportada==0):#se o veiculo nao tiver combustivel suficiente nao avanca
+            if custo > veiculo.km_atual:
                 continue
+            
+            if veiculo.carga_transportada == 0:
+                continue
+            
 
             if custo < melhor_custo:
                 melhor_caminho = caminho
                 melhor_custo = custo
                 melhor_veiculo = veiculo
+        
+        if melhor_caminho == []:
+            return [], 0, None
 
         if melhor_veiculo:
             melhor_veiculo.local = cidade
@@ -456,6 +460,7 @@ class Graph:
                 if veiculos[i].id == melhor_veiculo.id:
                     veiculos[i] = melhor_veiculo
                     break
+                
         return melhor_caminho, melhor_custo, melhor_veiculo
 
 
@@ -465,32 +470,65 @@ class Graph:
     def melhor_caminho(self, cidades, veiculos):
      caminho = []
      custo = 0
-     while(self.cidades_ainda_risco(cidades) and veiculos_sem_carga(veiculos)):
+     while(self.cidades_ainda_risco(cidades) ): #and veiculos_com_carga(veiculos) and self.veiculos_podem_ir(cidades, veiculos)
         for cidade in cidades:
-            if cidade.populacao_necessitada == 0:
+
+            if cidade.populacao_necessitada == 0 or not cidade.alcancavel:
                 continue
             
             path, cost, veiculo = self.melhor_veiculo(veiculos, cidade.nome)
             
-            if veiculo is None:
+            
+            if veiculo is None:#nenhum veiculo pode ir aquela cidade
+                #print(f"City {cidade.nome} is unreachable due to blocked paths.") #verificar que n chega lá porque tá bloqueado e n porque tamos sem gasolina ou mercadoria
+                cidade.alcancavel=False
                 continue
+
+            
+            
+            populacao_necessitada = cidade.populacao_necessitada
             deposito=veiculo.depositar(cidade.populacao_necessitada)
             cidade.decrementa_necessidades(deposito)
-            
-            
+            #print(f"Updated city: {cidade.nome}, População Necessitada Original: {populacao_necessitada},População Necessitada Atual: {cidade.populacao_necessitada}")
+
             caminho.append((path, veiculo.id,veiculo.km_atual,veiculo.carga_transportada))
             custo += cost
             custo_cidade=self.calcula_custo_com_risco(path, cidades)
             custo+=custo_cidade
-            # tempo=veiculo.dim_tempo_gasto(custo)
-            # cidade.decrementa_tempo_critico(tempo)
-            
+            #veiculo.km_atual -= custo_cidade
+
             # if cidade.populacao_necessitada != 0: #se a cidade ainda tiver populacao necessitada
             #     break
 
-        
+
+     for cidade in cidades:
+         if not (cidade.alcancavel):
+            print(f"City {cidade.nome} is not reachable.")
      return self.organiza_caminho_por_veiculo(caminho, custo)
 
+    ##########################################
+    #   Verifica se nenhum veículo pode ir a qualquer cidade
+    ##########################################
+    def veiculos_podem_ir(self, cidades, veiculos):
+        for cidade in cidades:
+            for veiculo in veiculos:
+                if veiculo.km_atual > 0:
+                    path, cost = self.melhor_algoritmo(cidade.nome, veiculo)
+                    if cost <= veiculo.km_atual:
+                        return True
+        return False
+
+    def veiculo_pode_ir(self, cidade, veiculos):
+            for veiculo in veiculos:
+                if veiculo.km_atual > 0:
+                    path, cost = self.melhor_algoritmo(cidade.nome, veiculo)
+                    if cost <= veiculo.km_atual or path==[] or cost==0:
+                        return True
+            return False
+
+    ##########################################
+    #   Calcula o custo de um caminho com risco
+    ##########################################
     def calcula_custo_com_risco(self, caminho, cidades):
                     custo = self.calcula_custo(caminho)
                     for cidade_nome in caminho:
@@ -498,12 +536,16 @@ class Graph:
                         if cidade and cidade.nivel_risco > 0:
                             custo += cidade.nivel_risco * 20
                     return custo
-                
+    
+    ##########################################
+    #   Verifica se há cidades com risco
+    ##########################################
     def cidades_ainda_risco(self,cidades):
         for cidade in cidades:
-            if cidade.nivel_risco!=0:
+            if cidade.nivel_risco!=0 and cidade.alcancavel==True:
                 return True
         return False
+
 
     ##########################################
     #   Organiza caminho por tipo de veiculo
@@ -555,7 +597,8 @@ class Graph:
             if meteorologia == Weather.STORM:
                 return False
         if meteorologia == Weather.BLOCKED:
-            return False
+            if veiculo.tipo != "Helicoptero":
+                return False
         return True
 
     
@@ -582,17 +625,3 @@ class Graph:
         thread = threading.Thread(target=self.update_heuristica, args=(cidades,))
         thread.daemon = True
         thread.start()
-
-    #########################
-    # Risco
-    #########################
-    # def update_risco(self, cidades):
-    #     while True:
-    #         for cidade in cidades:
-    #             cidade.calcula_risco()
-    #         time.sleep(1)
-
-    # def start_updating_risco(self, cidades):
-    #     thread = threading.Thread(target=self.update_risco, args=(cidades,))
-    #     thread.daemon = True
-    #     thread.start()

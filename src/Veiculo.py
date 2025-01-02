@@ -10,6 +10,7 @@ class Veiculo:
     self.km_max=km_max
     self.km_atual=km_atual
     self.velocidade_media=velocidade_media
+    self.stop=False
      
 
  def abastecer(self):
@@ -35,17 +36,17 @@ class Veiculo:
  def dim_tempo_gasto(self,km):
     return self.velocidade_media/km
 
-
-
  def __str__(self):
     return f"Veiculo(tipo={self.tipo}, local={self.local}, carga_maxima={self.carga_maxima}, carga_transportada={self.carga_transportada}, km_max={self.km_max}, km_atual={self.km_atual})"
 
  def __repr__(self):
     return self.__str__()
 
-def veiculos_sem_carga(veiculos):
+def veiculos_com_carga(veiculos):
     for veiculo in veiculos:
         if veiculo.carga_transportada!=0:
             return True
     return False
+
+
 
