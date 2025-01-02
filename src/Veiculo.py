@@ -40,6 +40,9 @@ class Veiculo:
  def __str__(self):
     return f"Veiculo(tipo={self.tipo}, local={self.local}, carga_maxima={self.carga_maxima}, carga_transportada={self.carga_transportada}, km_max={self.km_max}, km_atual={self.km_atual})"
 
+ def __repr__(self):
+    return self.__str__()
+
 def veiculos_sem_carga(veiculos):
     for veiculo in veiculos:
         if veiculo.carga_transportada!=0:
