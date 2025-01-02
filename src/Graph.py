@@ -432,10 +432,13 @@ class Graph:
     ##########################################
     #   Escolhe o melhor veiculo
     ##########################################
-    def melhor_veiculo(self, veiculos, cidade):
+    def melhor_veiculo(self, veiculos, cidade,cidades):
         (melhor_caminho, melhor_custo, melhor_veiculo) = ([], float('inf'), None)
         for veiculo in veiculos:
             (caminho, custo) = self.melhor_algoritmo(cidade, veiculo)
+            
+            custo_cidade=self.calcula_custo_com_risco(caminho, cidades)
+            custo+=custo_cidade
 
             if custo > veiculo.km_atual:
                 continue
@@ -476,7 +479,7 @@ class Graph:
             if cidade.populacao_necessitada == 0 or not cidade.alcancavel:
                 continue
             
-            path, cost, veiculo = self.melhor_veiculo(veiculos, cidade.nome)
+            path, cost, veiculo = self.melhor_veiculo(veiculos, cidade.nome,cidades)
             
             
             if veiculo is None:#nenhum veiculo pode ir aquela cidade
@@ -493,9 +496,7 @@ class Graph:
 
             caminho.append((path, veiculo.id,veiculo.km_atual,veiculo.carga_transportada))
             custo += cost
-            custo_cidade=self.calcula_custo_com_risco(path, cidades)
-            custo+=custo_cidade
-            #veiculo.km_atual -= custo_cidade
+            
 
             # if cidade.populacao_necessitada != 0: #se a cidade ainda tiver populacao necessitada
             #     break
