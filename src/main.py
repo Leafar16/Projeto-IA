@@ -96,89 +96,92 @@ def main():
     #menu
     saida = -1
     while saida != 0:
+        try:
+            print("1-Imprimir Grafo")
+            print("2-Desenhar Grafo")
+            print("3-Imprimir  nodos de Grafo")
+            print("4-Imprimir arestas de Grafo")
+            print("5-DFS")
+            print("6-BFS")
+            print("7-A*")
+            print("8-Gulosa")
+            print("9-Melhor Algoritmo")
+            print("10-Melhor Caminho")
+            print("11-Melhor Caminho com veiculo")
+            print("0-Saír")
 
-        print("1-Imprimir Grafo")
-        print("2-Desenhar Grafo")
-        print("3-Imprimir  nodos de Grafo")
-        print("4-Imprimir arestas de Grafo")
-        print("5-DFS")
-        print("6-BFS")
-        print("7-A*")
-        print("8-Gulosa")
-        print("9-Melhor Algoritmo")
-        print("10-Melhor Caminho")
-        print("11-Melhor Caminho com veiculo")
-        print("0-Saír")
+            saida = int(input("introduza a sua opcao-> "))
+            if saida == 0:
+                print("saindo.......")
+            elif saida == 1:
+                print(graph.m_graph)
+                l = input("prima enter para continuar")
+            elif saida == 2:
+                graph.desenha()
+            elif saida == 3:
+                print(graph.m_graph.keys())
+                l = input("prima enter para continuar")
+            elif saida == 4:
+                print(graph.imprime_aresta())
+                l = input("prima enter para continuar")
+            elif saida == 5:
+                inicio = input("Nodo inicial->")
+                fim = input("Nodo final->")
+                Helicoptero2 = copy.deepcopy(Helicoptero)
+                print(graph.procura_DFS(inicio,fim,Helicoptero2, path=[], visited=set()))
+                l = input("prima enter para continuar")
+            elif saida == 6:
+                inicio = input("Nodo inicial->")
+                fim = input("Nodo final->")
+                print(graph.procura_BFS(inicio,fim,Carro))
+                print(Carro.local)
+                l = input("prima enter para continuar")
+            elif saida == 7:
+                inicio = input("Nodo inicial->")
+                fim = input("Nodo final->")
+                print(graph.procura_aStar(inicio, fim,Carro))
+                l = input("prima enter para continuar")
+            elif saida == 8:
+                inicio = input("Nodo inicial->")
+                fim = input("Nodo final->")
+                print(graph.greedy(inicio, fim,Carrinha))
+                l = input("prima enter para continuar")
+            elif saida == 9:
+                fim = input("Nodo final->")
+                print(graph.melhor_algoritmo(fim,Carro))
+                l = input("prima enter para continuar")
+            elif saida == 10:
+                veiculos_new = copy.deepcopy(veiculos)
+                cidades_new = copy.deepcopy(cidades)
+                graph.start_updating_heuristica(cidades_new)
 
-        saida = int(input("introduza a sua opcao-> "))
-        if saida == 0:
-            print("saindo.......")
-        elif saida == 1:
-            print(graph.m_graph)
-            l = input("prima enter para continuar")
-        elif saida == 2:
-            graph.desenha()
-        elif saida == 3:
-            print(graph.m_graph.keys())
-            l = input("prima enter para continuar")
-        elif saida == 4:
-            print(graph.imprime_aresta())
-            l = input("prima enter para continuar")
-        elif saida == 5:
-            inicio = input("Nodo inicial->")
-            fim = input("Nodo final->")
-            Helicoptero2 = copy.deepcopy(Helicoptero)
-            print(graph.procura_DFS(inicio,fim,Helicoptero2, path=[], visited=set()))
-            l = input("prima enter para continuar")
-        elif saida == 6:
-            inicio = input("Nodo inicial->")
-            fim = input("Nodo final->")
-            print(graph.procura_BFS(inicio,fim,Carro))
-            print(Carro.local)
-            l = input("prima enter para continuar")
-        elif saida == 7:
-            inicio = input("Nodo inicial->")
-            fim = input("Nodo final->")
-            print(graph.procura_aStar(inicio, fim,Carro))
-            l = input("prima enter para continuar")
-        elif saida == 8:
-            inicio = input("Nodo inicial->")
-            fim = input("Nodo final->")
-            print(graph.greedy(inicio, fim,Carrinha))
-            l = input("prima enter para continuar")
-        elif saida == 9:
-            fim = input("Nodo final->")
-            print(graph.melhor_algoritmo(fim,Carro))
-            l = input("prima enter para continuar")
-        elif saida == 10:
-            veiculos_new = copy.deepcopy(veiculos)
-            cidades_new = copy.deepcopy(cidades)
-            graph.start_updating_heuristica(cidades_new)
-
-            
-            (caminho, custo) = graph.melhor_caminho(cidades_new, veiculos_new)
-
-            print("\n")
-            for tipo_veiculo, detalhes in caminho.items(): #imprimir os caminhos de cada veiculo
-                print(f"Veiculo: {tipo_veiculo}")
-                for detalhe in detalhes:
-                    print(f"Caminho: {detalhe[0]}, KM Atual: {detalhe[1]}, Carga Transportada: {detalhe[2]}")
-                print("\n")
-            print(f"Custo Total: {custo}")
-
-            for cidade in cidades_new:
-                print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}, População Necessitada: {cidade.populacao_necessitada}")
                 
+                (caminho, custo) = graph.melhor_caminho(cidades_new, veiculos_new)
 
-            l = input("prima enter para continuar")
+                print("\n")
+                for tipo_veiculo, detalhes in caminho.items(): #imprimir os caminhos de cada veiculo
+                    print(f"Veiculo: {tipo_veiculo}")
+                    for detalhe in detalhes:
+                        print(f"Caminho: {detalhe[0]}, KM Atual: {detalhe[1]}, Carga Transportada: {detalhe[2]}")
+                    print("\n")
+                print(f"Custo Total: {custo}")
 
-        elif saida == 11:
-            fim = input("Nodo final->")
-            veiculos_new = copy.deepcopy(veiculos)
-            print(graph.melhor_veiculo(veiculos,fim))
-            l = input("prima enter para continuar")
-        else:
-            print("you didn't add anything")
+                for cidade in cidades_new:
+                    print(f"Cidade: {cidade.nome}, Risco: {cidade.nivel_risco}, População Necessitada: {cidade.populacao_necessitada}")
+                    
+
+                l = input("prima enter para continuar")
+
+            elif saida == 11:
+                fim = input("Nodo final->")
+                veiculos_new = copy.deepcopy(veiculos)
+                print(graph.melhor_veiculo(veiculos,fim))
+                l = input("prima enter para continuar")
+            else:
+                print("you didn't add anything")
+                l = input("prima enter para continuar")
+        except Exception as e:
+            print(f"An error occurred: {e}")
             l = input("prima enter para continuar")
 
 

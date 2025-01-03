@@ -576,7 +576,7 @@ class Graph:
                             if n1 == node1:
                                 self.m_graph[node2][j] = (node1, total_cost,peso,geo,met_new)
                                 break
-            print("Updated edge weights")
+            #print("Updated edge weights")
             time.sleep(20)
 
 
