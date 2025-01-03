@@ -10,7 +10,6 @@ class Veiculo:
     self.km_max=km_max
     self.km_atual=km_atual
     self.velocidade_media=velocidade_media
-    self.stop=False
      
 
  def abastecer(self):

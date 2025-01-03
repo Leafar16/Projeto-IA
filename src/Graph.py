@@ -566,7 +566,7 @@ class Graph:
         while True:
             for node1 in self.m_graph:
                 for i, (node2, _, weight,g,met) in enumerate(self.m_graph[node1]):
-                    met_new = random.choices([Weather.CLEAR, Weather.RAIN, Weather.STORM],weights=[50, 35, 15],k=1)[0]
+                    met_new = random.choices([Weather.CLEAR, Weather.RAIN, Weather.STORM,Weather.BLOCKED],weights=[50, 30, 15,5],k=1)[0]
                     weather_multiplier = met_new.value
                     total_cost = weight * weather_multiplier
                     total_cost = int(total_cost)
